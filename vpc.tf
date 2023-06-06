@@ -39,6 +39,41 @@ resource "aws_subnet" "private_subnet" {
 }
 
 
+# Public 서브넷에 대한 라우팅 테이블 생성
+resource "aws_route_table" "public_route_table" {
+  count                = length(aws_vpc.vpc) * 2
+  vpc_id               = aws_vpc.vpc[count.index / 2].id
+
+  tags = {
+    Name = "PublicRouteTable${count.index + 1}"
+  }
+}
+
+# Private 서브넷에 대한 라우팅 테이블 생성
+resource "aws_route_table" "private_route_table" {
+  count                = length(aws_vpc.vpc) * 2
+  vpc_id               = aws_vpc.vpc[count.index / 2].id
+
+  tags = {
+    Name = "PrivateRouteTable${count.index + 1}"
+  }
+}
+
+# Public 서브넷에 대한 라우팅 테이블 연결 생성
+resource "aws_route_table_association" "public_route_table_association" {
+  count            = length(aws_vpc.vpc) * 2
+  subnet_id        = aws_subnet.public_subnet[count.index].id
+  route_table_id   = aws_route_table.public_route_table[count.index].id
+}
+
+# Private 서브넷에 대한 라우팅 테이블 연결 생성
+resource "aws_route_table_association" "private_route_table_association" {
+  count            = length(aws_vpc.vpc) * 2
+  subnet_id        = aws_subnet.private_subnet[count.index].id
+  route_table_id   = aws_route_table.private_route_table[count.index].id
+}
+
+
 #보안그룹
 resource "aws_security_group" "song-sg" {
   count = length(aws_vpc.vpc) * 2
@@ -75,7 +110,7 @@ resource "aws_instance" "ec2" {
   count         = length(aws_vpc.vpc) * 2
   ami = var.AMIS 
   instance_type = "t2.micro"
-  key_name = "song-key.pem"
+  key_name                    = "${aws_key_pair.test-tgw-keypair.key_name}"
   vpc_security_group_ids = [aws_security_group.song-sg[count.index].id]
   availability_zone = element(var.azs, count.index % length(var.azs))
   subnet_id     = aws_subnet.public_subnet[count.index].id
