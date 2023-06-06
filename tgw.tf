@@ -14,8 +14,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "transit_gateway_attachment" {
   subnet_ids     = [aws_subnet.public_subnet[count.index].id]  # Transit Gateway 연결에 사용할 서브넷 선택
   transit_gateway_id = aws_ec2_transit_gateway.test-tgw.id
   vpc_id         = aws_vpc.vpc[count.index].id
-  dns_support    = true
-  ipv6_support   = false
+
 }
 
 # Transit Gateway VPC Attachment에 대한 라우팅 테이블 연결 생성
