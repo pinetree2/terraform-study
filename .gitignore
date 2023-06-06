@@ -1,5 +1,5 @@
-~/4weeks/terraform.tfvars
-~/4weeks/.terraform/
-~/4weeks/key-pair.tf
+terraform.tfvars
+.terraform/
+key-pair.tf
 
 
