@@ -1,65 +1,53 @@
-resource "aws_wafv2_web_acl" "web_acl" {
-  name        = "song-acl"
-  description = "Example of a managed rule."
-  scope       = "REGIONAL"
+# WAF 리소스 정의
+resource "aws_waf_web_acl" "waf" {
+  count       = 3
+  name        = "waf-${count.index + 1}"
+  metric_name = "waf-${count.index + 1}"
 
   default_action {
-    allow {}
+    type = "ALLOW"
   }
 
-  rule {
-    name     = "rule-1"
-    priority = 1
-
-    override_action {
-      count {}
-    }
-
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesCommonRuleSet"
-        vendor_name = "AWS"
-
-        rule_action_override {
-          action_to_use {
-            count {}
-          }
-
-          name = "SizeRestrictions_QUERYSTRING"
-        }
-
-        rule_action_override {
-          action_to_use {
-            count {}
-          }
-
-          name = "NoUserAgent_HEADER"
-        }
-
-        scope_down_statement {
-          geo_match_statement {
-            country_codes = ["US", "NL"]
-          }
-        }
+  rules = [
+    {
+      priority = 1
+      action = {
+        type = "BLOCK"
       }
+      override_action =  {
+        type = "NONE"
+      }
+      rule_id = aws_waf_rule.rule[count.index].id
     }
+  ]
+}
 
+# WAF 규칙 정의
+resource "aws_waf_rule" "rule" {
+  count = 3
+  name  = "waf-rule-${count.index + 1}"
 
-    visibility_config {
-      cloudwatch_metrics_enabled = false
-      metric_name                = "friendly-rule-metric-name"
-      sampled_requests_enabled   = false
+  metric_name = "waf-rule-${count.index + 1}"
+  predicates = [
+    {
+      data_id = aws_waf_byte_match_set.set[count.index].id
+      negated = false
+      type    = "ByteMatch"
     }
-  }
+  ]
+}
 
-  tags = {
-    Tag1 = "Value1"
-    Tag2 = "Value2"
-  }
+# WAF 바이트 매치 세트 정의
+resource "aws_waf_byte_match_set" "set" {
+  count = 3
+  name  = "waf-byte-match-set-${count.index + 1}"
 
-  visibility_config {
-    cloudwatch_metrics_enabled = false
-    metric_name                = "friendly-metric-name"
-    sampled_requests_enabled   = false
+  byte_match_tuples {
+    field_to_match {
+      type = "URI"
+    }
+    target_string = "/index.php"
+    positional_constraint = "CONTAINS"
+    text_transformation   = "NONE"
   }
 }
