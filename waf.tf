@@ -37,17 +37,3 @@ resource "aws_waf_rule" "rule" {
   ]
 }
 
-# WAF 바이트 매치 세트 정의
-resource "aws_waf_byte_match_set" "set" {
-  count = 3
-  name  = "waf-byte-match-set-${count.index + 1}"
-
-  byte_match_tuples {
-    field_to_match {
-      type = "URI"
-    }
-    target_string = "/index.php"
-    positional_constraint = "CONTAINS"
-    text_transformation   = "NONE"
-  }
-}
