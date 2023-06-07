@@ -14,7 +14,16 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   ]
 }
 
+resource "aws_launch_configuration" "launch_config" {
+  count               = 3
+  name                = "launch-config-${count.index + 1}"
+  image_id            = "ami-12345678"
+  instance_type       = "t2.micro"
+  security_groups     = [aws_security_group.alb_security_group[count.index].id]
+  associate_public_ip_address = true
 
+  # 다른 설정들...
+}
 
 
 

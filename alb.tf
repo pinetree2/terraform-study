@@ -1,4 +1,31 @@
 
+# 보안 그룹 리소스 정의
+resource "aws_security_group" "alb_security_group" {
+  count       = 3
+  name        = "alb-security-group-${count.index + 1}"
+  description = "ALB Security Group"
+  vpc_id      = aws_vpc.vpc[count.index / 2].id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-security-group-${count.index + 1}"
+  }
+}
+
+
 # ALB 리소스 정의
 resource "aws_lb" "alb" {
   count             = 3
