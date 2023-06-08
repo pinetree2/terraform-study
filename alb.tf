@@ -1,4 +1,4 @@
-
+/*
 # 보안 그룹 리소스 정의
 resource "aws_security_group" "alb_security_group" {
   count       = 3
@@ -69,3 +69,4 @@ resource "aws_lb_listener" "listener" {
   }
 }
 
+*/

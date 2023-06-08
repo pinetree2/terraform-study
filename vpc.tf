@@ -110,7 +110,7 @@ resource "aws_instance" "ec2" {
   count         = length(aws_vpc.vpc) * 2
   ami = var.AMIS 
   instance_type = "t2.micro"
-  key_name                    = "${aws_key_pair.test-tgw-keypair.key_name}"
+  #key_name                    = "${aws_key_pair.test-tgw-keypair.key_name}"
   vpc_security_group_ids = [aws_security_group.song-sg[count.index].id]
   availability_zone = element(var.azs, count.index % length(var.azs))
   subnet_id     = aws_subnet.public_subnet[count.index].id
