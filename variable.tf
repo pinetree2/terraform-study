@@ -5,6 +5,21 @@ variable "aws_region" {
   default = "ap-northeast-2"
 }
 
+variable "instance_type" {
+  type = string
+  default = "t2.micro"
+}
+
+variable "autoscaling_group_min_size" {
+  type = number
+  default = 2
+}
+variable "autoscaling_group_max_size" {
+  type = number
+  default = 3
+}
+
+
 #AZ
 variable "azs" {
   type    = list(string)

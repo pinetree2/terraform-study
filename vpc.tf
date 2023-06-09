@@ -2,7 +2,7 @@
 
 # VPC 리소스 정의
 resource "aws_vpc" "vpc" {
-  count = length(aws_vpc.vpc) * 2
+  count = 3
   cidr_block        = cidrsubnet("10.0.0.0/16", 4, count.index)
 
   tags = {
@@ -18,7 +18,7 @@ resource "aws_subnet" "public_subnet" {
   vpc_id                 = aws_vpc.vpc[count.index / 2].id
   cidr_block             = var.public_subnet_cidrs[count.index]
   availability_zone       = element(var.azs, count.index % length(var.azs))
-
+  #id = aws_subnet.public_subnet[count.index].id
 
   tags = {
     Name = "song-public_subnet${count.index + 1}"
@@ -82,29 +82,46 @@ resource "aws_security_group" "song-sg" {
   description = "Security Group ${count.index + 1}"
   vpc_id      = aws_vpc.vpc[count.index / 2].id
 
- # 인바운드 규칙 정의
+ 
   ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 8
+    to_port     = 0
+    protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # 아웃바운드 규칙 정의
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
-
 
   tags = {
     Name = "song-sg_${count.index + 1}"
   }
 }
 
-
+/*
 #ec2 생성
 resource "aws_instance" "ec2" {
   count         = length(aws_vpc.vpc) * 2
@@ -115,7 +132,8 @@ resource "aws_instance" "ec2" {
   availability_zone = element(var.azs, count.index % length(var.azs))
   subnet_id     = aws_subnet.public_subnet[count.index].id
 
-tags = {
-    Name = "song-ec2_${count.index + 1}"
+  tags = {
+      Name = "song-ec2_${count.index + 1}"
+    }
   }
-}
+*/
