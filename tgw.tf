@@ -32,3 +32,4 @@ resource "aws_route" "transit_gateway_attachment_route" {
   destination_cidr_block = "0.0.0.0/0"  # 대상 CIDR 블록 설정 (필요에 따라 수정) 인터넷으로 모든 트래픽을 전달하려는 경우 0.0.0.0/0을 사용
   transit_gateway_id     = aws_ec2_transit_gateway.test-tgw.id
 }
+

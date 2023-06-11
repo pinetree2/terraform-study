@@ -66,5 +66,4 @@ resource "aws_launch_configuration" "launch_configuration" {
   image_id             = "ami-091a822378848a5bf"
   instance_type        = "t2.micro"
   security_groups      = ["${aws_security_group.asg_sg[count.index].id}"]
-  # 기타 구성 옵션 설정
 }
