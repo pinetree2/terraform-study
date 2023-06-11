@@ -2,4 +2,5 @@ terraform.tfvars
 .terraform/
 key_pair.tf
 song-key.pem
-
+terraform.tfstate
+terraform.tfstate.backup
