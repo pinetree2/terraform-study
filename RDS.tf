@@ -1,8 +1,9 @@
+
 resource "aws_db_subnet_group" "subnet_group" {
   count       = length(aws_vpc.vpc)
   name        = "subnet-group-${count.index + 1}"
   description = "Subnet group for RDS in VPC ${count.index + 1}"
-  subnet_ids  = [for index, subnet in aws_subnet.private_subnet : subnet[count.index * 2 + index].id]
+  subnet_ids = [for subnet in aws_subnet.private_subnet : subnet.id]
 }
 
 resource "aws_db_instance" "rds" {
@@ -18,3 +19,4 @@ resource "aws_db_instance" "rds" {
   db_subnet_group_name = aws_db_subnet_group.subnet_group[count.index].name
   allow_major_version_upgrade = true
 }
+

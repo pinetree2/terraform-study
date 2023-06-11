@@ -10,12 +10,10 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-
-
 # 가용 영역에 따라 public 서브넷 생성
 resource "aws_subnet" "public_subnet" {
   count                   = length(aws_vpc.vpc) * 2
-  vpc_id                 = aws_vpc.vpc[count.index / 2].id
+  vpc_id                 = aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
   cidr_block             = var.public_subnet_cidrs[count.index]
   availability_zone       = element(var.azs, count.index % length(var.azs))
   #id = aws_subnet.public_subnet[count.index].id
@@ -28,7 +26,7 @@ resource "aws_subnet" "public_subnet" {
 # 가용 영역에 따라 private 서브넷 생성
 resource "aws_subnet" "private_subnet" {
   count                   = length(aws_vpc.vpc) * 2
-  vpc_id                 = aws_vpc.vpc[count.index / 2].id
+  vpc_id                 = aws_vpc.vpc[floor(count.index / 2)].id
   cidr_block             = var.private_subnet_cidrs[count.index]
   availability_zone       = element(var.azs, count.index % length(var.azs))
 
@@ -42,7 +40,7 @@ resource "aws_subnet" "private_subnet" {
 # Public 서브넷에 대한 라우팅 테이블 생성
 resource "aws_route_table" "public_route_table" {
   count                = length(aws_vpc.vpc) * 2
-  vpc_id               = aws_vpc.vpc[count.index / 2].id
+  vpc_id               = aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
 
   tags = {
     Name = "PublicRouteTable${count.index + 1}"
@@ -52,7 +50,7 @@ resource "aws_route_table" "public_route_table" {
 # Private 서브넷에 대한 라우팅 테이블 생성
 resource "aws_route_table" "private_route_table" {
   count                = length(aws_vpc.vpc) * 2
-  vpc_id               = aws_vpc.vpc[count.index / 2].id
+  vpc_id               = aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
 
   tags = {
     Name = "PrivateRouteTable${count.index + 1}"
@@ -80,7 +78,7 @@ resource "aws_security_group" "song-sg" {
 
   name        = "sg_${count.index + 1}"
   description = "Security Group ${count.index + 1}"
-  vpc_id      = aws_vpc.vpc[count.index / 2].id
+  vpc_id      =  aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
 
  
   ingress {
