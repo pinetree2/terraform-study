@@ -20,7 +20,7 @@ resource "aws_security_group" "asg_sg" {
    count                   = length(aws_vpc.vpc) * 2
   name        = "ASG_Allow_Traffic"
   description = "Allow all inbound traffic for asg"
-  vpc_id      = aws_vpc.vpc[count.index / 2].id
+  vpc_id      = aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
 
   ingress {
     from_port   = 443
@@ -66,5 +66,4 @@ resource "aws_launch_configuration" "launch_configuration" {
   image_id             = "ami-091a822378848a5bf"
   instance_type        = "t2.micro"
   security_groups      = ["${aws_security_group.asg_sg[count.index].id}"]
-  # 기타 구성 옵션 설정
 }
