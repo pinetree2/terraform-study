@@ -6,3 +6,16 @@
 
 ## 4-5주차 아키텍처
 ![image](https://github.com/pinetree2/terraform-study/assets/79689822/20c42340-89f0-4ddd-92e7-03146c9b31ba)
+
+
+---
+
+## 리전간 peering 후 tgw 연결(?)
+### **vpc peering**
+<img width="337" alt="image" src="https://github.com/pinetree2/terraform-study/assets/79689822/fcc1c653-6a2d-4994-987c-386a2eeec0d3">
+
+### **tgw**
+<img width="330" alt="image" src="https://github.com/pinetree2/terraform-study/assets/79689822/9a49143d-2da7-4e9a-b966-62b9aedcac6b">
+
+
+(작성중..)
