@@ -63,6 +63,7 @@ resource "aws_security_group" "asg_sg" {
 resource "aws_launch_configuration" "launch_configuration" {
   count                = length(aws_vpc.vpc) * 2
   name_prefix          = "my-launch-configuration"
+  
   image_id             = "ami-091a822378848a5bf"
   instance_type        = "t2.micro"
   security_groups      = ["${aws_security_group.asg_sg[count.index].id}"]
