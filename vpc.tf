@@ -1,6 +1,9 @@
 
 
-# VPC 리소스 정의
+
+# VPC 리소스 정의 - cidrsubnet 을 이용한 것 - 근데 서브넷팅 해주는 함수인데
+#왜 vpc 에...(gpt의 실수..!?)
+/*
 resource "aws_vpc" "vpc" {
   count = 3
   cidr_block        = cidrsubnet("10.0.0.0/16", 4, count.index)
@@ -9,8 +12,29 @@ resource "aws_vpc" "vpc" {
     Name = "song-vpc${count.index + 1}"
   }
 }
+*/
 
+#vpc 정의 
+resource "aws_vpc" "vpc1"{
+  provider = aws.region1
+  cidr_block = "10.0.0.0/16"
+
+}
+resource "aws_vpc" "vpc2"{
+  provider = aws.region2
+  cidr_block = "10.1.0.0/16"
+  
+}
+resource "aws_vpc" "vpc3"{
+  provider = aws.region3
+  cidr_block = "10.2.0.0/16"
+}
+
+
+
+# 이 서브넷 코드는 이전 아키에 맞게 작성해서 위에 생성한 vpc 와는 안맞을 수 있음음
 # 가용 영역에 따라 public 서브넷 생성
+/*
 resource "aws_subnet" "public_subnet" {
   count                   = length(aws_vpc.vpc) * 2
   vpc_id                 = aws_vpc.vpc[count.index % length(aws_vpc.vpc)].id
@@ -70,7 +94,7 @@ resource "aws_route_table_association" "private_route_table_association" {
   subnet_id        = aws_subnet.private_subnet[count.index].id
   route_table_id   = aws_route_table.private_route_table[count.index].id
 }
-
+*/
 
 #보안그룹
 resource "aws_security_group" "song-sg" {

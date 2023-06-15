@@ -54,9 +54,6 @@ resource "aws_wafv2_web_acl" "waf" {
 
   }
 }
-
-  
-
 */
 
 resource "aws_wafv2_web_acl" "example" {

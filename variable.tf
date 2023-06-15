@@ -1,8 +1,8 @@
 
 # region 변수
-variable "aws_region" {
-  type    = string
-  default = "ap-northeast-2"
+variable "aws_region" "region" {
+  type    = list(string)
+  default = ["us-east-1","ap-northeast-1","ap-northeast-2","us-west-1"]
 }
 
 variable "instance_type" {
@@ -44,6 +44,15 @@ variable "private_subnet_cidrs" {
 variable "vpc_cidr_blocks"{
   type = list(string)
   default = ["10.0.0.0/16","10.1.0.0/16","10.2.0.0/16"]
+}
+
+
+variable "cidr" {
+  default = {
+    us-east-1 = "172.20.0.0/24"
+    us-east-2 = "172.20.1.0/24"
+    ap-northeast-2 = "172.20.2.0/24"
+  }
 }
 
 variable "AMIS" {
